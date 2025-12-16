@@ -6,5 +6,9 @@ app = Flask(__name__)
 def index():
     return "Backend TalkTranslate en cours de développement"
 
+@app.route("/ping")
+def ping():
+    return "pong"
+
 if __name__ == "__main__":
     app.run(debug=True)
