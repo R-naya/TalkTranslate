@@ -18,9 +18,24 @@ def echo():
         return "Aucune donnée reçue", 400
     
     message = data.get("message", "")
-
     return {
         "received": message
+    }
+
+@app.route("/transcribe", methods=["POST"])
+def transcribe():
+    data = request.json
+
+    if data is None:
+        return "Aucune donnée reçue", 400
+
+    text = data.get("text", "")
+
+    transcription = text.lower().strip()
+
+    return {
+        "original": text,
+        "transcription": transcription
     }
 
 if __name__ == "__main__":
