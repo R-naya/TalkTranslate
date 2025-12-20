@@ -6,6 +6,46 @@
     </head>
     <body>
         <h1>TalkTranslate</h1>
-        <p>Projet en cours</p>
+
+        <p>Entrez un texte à traduire :</p>
+
+        <input type="text" id="textInput" placeholder="Ex : bonjour">
+        <select id="languageSelect">
+            <option value="en">Anglais</option>
+            <option value="es">Espagnol</option>
+            <option value="de">Allemand</option>
+        </select>
+
+        <button id="translateButton">Traduire</button>
+
+        <h2>Résultat :</h2>
+        <p id="result"></p>
+
+        <script>
+            const button = document.getElementById("translateButton");
+
+            button.addEventListener("click", () => {
+                const text = document.getElementById("textInput").value;
+                const lang = document.getElementById("languageSelect").value;
+
+                fetch("http://127.0.0.1:5000/translate", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        target_lang: lang
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("result").textContent = data.translated;
+                })
+                .catch(error => {
+                        console.error("Erreur :", error);
+                });
+            });
+        </script>
     </body>
 </html>
