@@ -19,5 +19,5 @@ Prérequis :
 
 Installation des dépendances :
 
-'''bash
+```bash
 pip install -r requirements.txt
