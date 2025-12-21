@@ -15,7 +15,7 @@ L'objectif de ce projet est de développer une application permettant de traduir
 ## Installation (backend)
 
 Prérequis :
--Python 3
+- Python 3
 
 Installation des dépendances :
 
