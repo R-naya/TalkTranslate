@@ -58,5 +58,26 @@ def translate():
         "target_lang": target_lang
     }
 
+@app.route("/process", methods=["POST"])
+def process():
+    data = request.json
+
+    if data is None:
+        return "Aucune donnée reçue", 400
+    
+    text = data.get("text", "")
+    target_lang = data.get("target_lang","en")
+
+    transcription = text.lower().strip()
+
+    translated_text = f"[{target_lang}] {transcription}"
+
+    return {
+        "original": text,
+        "transcription": transcription,
+        "translated": translated_text,
+        "target_lang": target_lang
+    }
+
 if __name__ == "__main__":
     app.run(debug=True)
