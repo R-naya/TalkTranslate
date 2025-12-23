@@ -19,7 +19,8 @@
         <button id="translateButton">Traduire</button>
 
         <h2>Résultat :</h2>
-        <p id="result"></p>
+        <p><strong>Transcription :</strong> <span id="transcription"></span></p>
+        <p><strong>Traduction :</strong> <span id="translation"></span></p>
 
         <script>
             const button = document.getElementById("translateButton");
@@ -28,7 +29,7 @@
                 const text = document.getElementById("textInput").value;
                 const lang = document.getElementById("languageSelect").value;
 
-                fetch("http://127.0.0.1:5000/translate", {
+                fetch("http://127.0.0.1:5000/process", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -40,7 +41,8 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById("result").textContent = data.translated;
+                    document.getElementById("transcription").textContent = data.transcription;
+                    document.getElementById("translation").textContent = data.translated;
                 })
                 .catch(error => {
                         console.error("Erreur :", error);
