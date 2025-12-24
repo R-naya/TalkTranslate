@@ -1,5 +1,6 @@
 from flask import Flask, request
 from flask_cors import CORS
+import requests
 
 app = Flask(__name__)
 CORS(app)
@@ -70,7 +71,26 @@ def process():
 
     transcription = text.lower().strip()
 
-    translated_text = f"[{target_lang}] {transcription}"
+    try:
+        response = requests.post(
+            "https://libretranslate.com/translate",
+            json={
+                "q": transcription,
+                "source": "auto",
+                "target": target_lang,
+                "format": "text"
+            },
+            timeout=5
+        )
+
+        translated_text = response.json().get(
+            "translatedText",
+            f"[{target_lang}] {transcription}"
+        )
+
+    except Exception as e:
+        print("Traduction indisponible :", e)
+        translated_text = f"[{target_lang}] {transcription}"
 
     return {
         "original": text,
