@@ -22,10 +22,15 @@
         <p><strong>Transcription :</strong> <span id="transcription"></span></p>
         <p><strong>Traduction :</strong> <span id="translation"></span></p>
 
-        <script>
-            const button = document.getElementById("translateButton");
+        <hr>
 
-            button.addEventListener("click", () => {
+        <h2>Capture audio (test)</h2>
+        <button id="recordButton">Démarrer l'enregistrement</button>
+
+        <script>
+            const translateButton = document.getElementById("translateButton");
+
+            translateButton.addEventListener("click", () => {
                 const text = document.getElementById("textInput").value;
                 const lang = document.getElementById("languageSelect").value;
 
@@ -47,6 +52,28 @@
                 .catch(error => {
                         console.error("Erreur :", error);
                 });
+            });
+
+            const recordButton = document.getElementById("recordButton");
+            let mediaRecorder = null;
+
+            recordButton.addEventListener("click", async () => {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true});
+                    console.log("Accès au micro autorisé");
+
+                    mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.start();
+
+                    console.log("Enregistrement démarré");
+
+                    setTimeout(() => {
+                        mediaRecorder.stop();
+                        console.log("Enregistrement arrêté");
+                    }, 3000);
+                } catch (err) {
+                    console.error("Erreur accès micro :", err);
+                }
             });
         </script>
     </body>
