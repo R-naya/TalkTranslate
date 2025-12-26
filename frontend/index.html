@@ -26,6 +26,13 @@
 
         <h2>Capture audio (test)</h2>
         <button id="recordButton">Démarrer l'enregistrement</button>
+        <p id="recordStatus"></p>
+
+        <div id="audioResult" style="display:none;">
+            <p>Audio enregistré :</p>
+            <audio id="audioPlayer" controls></audio>
+            <p><a id="downloadLink" download="recording.webm">Télécharger</a></p>
+        </div>
 
         <script>
             const translateButton = document.getElementById("translateButton");
@@ -55,16 +62,54 @@
             });
 
             const recordButton = document.getElementById("recordButton");
+            const recordStatus = document.getElementById("recordStatus");
+            const audioResult = document.getElementById("audioResult");
+            const audioPlayer = document.getElementById("audioPlayer");
+            const downloadLink = document.getElementById("downloadLink");
+
             let mediaRecorder = null;
+            let audioChunks = [];
 
             recordButton.addEventListener("click", async () => {
+                audioResult.style.display = "none";
+                audioChunks = [];
+
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true});
                     console.log("Accès au micro autorisé");
 
                     mediaRecorder = new MediaRecorder(stream);
-                    mediaRecorder.start();
 
+                    mediaRecorder.ondataavaible = (event) => {
+                        if (event.data && event.data.size > 0) {
+                            audioChunks.push(event.data);
+                        }
+                    };
+
+                    mediaRecorder.onstop = () => {
+                        const mimeType = mediaRecorder.mimeType || (audioChunks[0] ? audioChunks[0].type : "");
+                        const audioBlob = new Blob(audioChunks, { type: mimeType });
+                        const audioUrl = URL.createObjectURL(audioBlob);
+
+                        audioPlayer.src = audioUrl;
+                        downloadLiink.href = audioUrl;
+
+                        if (mimeType.includes("ogg")) {
+                            downloadLink.download = "recording.ogg";
+                        } else if (mimeType.includes("webm")) {
+                            downloadLink.download = "recording.webm";
+                        } else {
+                            downloadLink.download = "recording";
+                        }
+
+                        audioResult.style.display = "block";
+                        recordStatus.textContent = "Enregistrement terminé";
+
+                        strem.getTrack().forEach(track => track.stop());
+                    };
+
+                    mediaRecorder.start();
+                    recordStatus.textContent = "Enregistrement en cours...";
                     console.log("Enregistrement démarré");
 
                     setTimeout(() => {
