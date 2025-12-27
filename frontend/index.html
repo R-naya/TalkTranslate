@@ -89,6 +89,20 @@
                     mediaRecorder.onstop = () => {
                         const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
                         const audioUrl = URL.createObjectURL(audioBlob);
+                        const formData = new FormData();
+                        formData.append("audio", audioBlob, downloadLink.download || "recording.webm");
+
+                        fetch("http://127.0.0.1:5000/upload_audio", {
+                            method: "POST",
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log("Backend :", data);
+                        })
+                        .catch(error => {
+                            console.error("Erreur envoi audio :", error);
+                        });
 
                         audioPlayer.src = audioUrl;
                         downloadLink.href = audioUrl;

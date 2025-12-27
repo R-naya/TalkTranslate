@@ -1,6 +1,7 @@
 from flask import Flask, request
 from flask_cors import CORS
 import requests
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -97,6 +98,23 @@ def process():
         "transcription": transcription,
         "translated": translated_text,
         "target_lang": target_lang
+    }
+
+@app.route("/upload_audio", methods=["POST"])
+def upload_audio():
+    if "audio" not in request.files:
+        return {"error": "Aucun fichier audio reçu"}, 400
+        
+    audio_file = request.files["audio"]
+
+    os.makedirs("uploads", exist_ok=True)
+    save_path = os.path.join("uploads", audio_file.filename)
+
+    audio_file.save(save_path)
+
+    return {
+        "message": "Audio reçu avec succès",
+        "filename": audio_file.filename
     }
 
 if __name__ == "__main__":
