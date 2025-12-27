@@ -80,32 +80,23 @@
 
                     mediaRecorder = new MediaRecorder(stream);
 
-                    mediaRecorder.ondataavaible = (event) => {
+                    mediaRecorder.ondataavailable = (event) => {
                         if (event.data && event.data.size > 0) {
                             audioChunks.push(event.data);
                         }
                     };
 
                     mediaRecorder.onstop = () => {
-                        const mimeType = mediaRecorder.mimeType || (audioChunks[0] ? audioChunks[0].type : "");
-                        const audioBlob = new Blob(audioChunks, { type: mimeType });
+                        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
                         const audioUrl = URL.createObjectURL(audioBlob);
 
                         audioPlayer.src = audioUrl;
-                        downloadLiink.href = audioUrl;
-
-                        if (mimeType.includes("ogg")) {
-                            downloadLink.download = "recording.ogg";
-                        } else if (mimeType.includes("webm")) {
-                            downloadLink.download = "recording.webm";
-                        } else {
-                            downloadLink.download = "recording";
-                        }
+                        downloadLink.href = audioUrl;
 
                         audioResult.style.display = "block";
                         recordStatus.textContent = "Enregistrement terminé";
 
-                        strem.getTrack().forEach(track => track.stop());
+                        strem.getTracks().forEach(track => track.stop());
                     };
 
                     mediaRecorder.start();
