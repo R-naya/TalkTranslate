@@ -99,6 +99,10 @@
                         .then(response => response.json())
                         .then(data => {
                             console.log("Backend :", data);
+
+                            if (data.transcription) {
+                                document.getElementById("transcription").textContent = data.transcription;
+                            }
                         })
                         .catch(error => {
                             console.error("Erreur envoi audio :", error);
@@ -110,7 +114,7 @@
                         audioResult.style.display = "block";
                         recordStatus.textContent = "Enregistrement terminé";
 
-                        strem.getTracks().forEach(track => track.stop());
+                        stream.getTracks().forEach(track => track.stop());
                     };
 
                     mediaRecorder.start();

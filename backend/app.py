@@ -108,13 +108,16 @@ def upload_audio():
     audio_file = request.files["audio"]
 
     os.makedirs("uploads", exist_ok=True)
-    save_path = os.path.join("uploads", audio_file.filename)
 
+    save_path = os.path.join("uploads", audio_file.filename)
     audio_file.save(save_path)
+
+    fake_transcription = "Ceci est une transcription simulée"
 
     return {
         "message": "Audio reçu avec succès",
-        "filename": audio_file.filename
+        "filename": audio_file.filename,
+        "transcription": fake_transcription
     }
 
 if __name__ == "__main__":
