@@ -2,9 +2,11 @@ from flask import Flask, request
 from flask_cors import CORS
 import requests
 import os
+import whisper
 
 app = Flask(__name__)
 CORS(app)
+model = whisper.load_model("base")
 
 @app.route("/")
 def index():
@@ -108,16 +110,20 @@ def upload_audio():
     audio_file = request.files["audio"]
 
     os.makedirs("uploads", exist_ok=True)
-
     save_path = os.path.join("uploads", audio_file.filename)
     audio_file.save(save_path)
 
-    fake_transcription = "Ceci est une transcription simulée"
+    try:
+        result = model.transcribe(save_path)
+        transcription = result["text"]
+    except Exception as e:
+        print("Erreur Whisper :", e)
+        transcription = "[Erreur lors de la transcription]"
 
     return {
         "message": "Audio reçu avec succès",
         "filename": audio_file.filename,
-        "transcription": fake_transcription
+        "transcription": transcription
     }
 
 if __name__ == "__main__":
